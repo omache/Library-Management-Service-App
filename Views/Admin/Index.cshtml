@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>This is the Admin Panel</h2>
+
+<div>
+    <form class="form-group">
+        <h6 class="form-title">Here are some of the capabilities of the Admin</h6>
+        <ul class="list-group">
+            <li class="list-group-item">Add, Edit, Delete Books</li>
+            <li class="list-group-item">Add, Edit, Delete Authors</li>
+            <li class="list-group-item">Add, Edit, Delete Publishers</li>
+            <li class="list-group-item">Add, Edit, Delete Genres</li>
+            <li class="list-group-item">Add, Edit, Delete Users & Librarians</li>
+            <li class="list-group-item">Set limit to the number of books a member can borrow</li>
+            <li class="list-group-item">Set limit to the number of times a book can be issued to a person </li>
+           
+        </ul>
+       
+    </form>
+</div>
+
+<br>
+<br>
+<hr>
+
+
+<a asp-area="" asp-controller="Admin" asp-action="AddBook"><button class="btn btn-primary">Add New Book</button></a>

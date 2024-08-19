@@ -1,0 +1,133 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+
+@model IEnumerable<LMS.Models.Book>
+@{
+    ViewData["Title"] = "Index";
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <h1>All Available Books</h1>
+    @if (User?.Identity.Name == "omacherenox@gmail.com")
+    {
+        <p>
+            <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
+        </p>
+    }
+
+    <table class="table">
+        <thead class="table-active">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Title)</th>
+                <th>@Html.DisplayNameFor(model => model.Publisher)</th>
+                <th>@Html.DisplayNameFor(model => model.PublishYear)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <div id="book-@item.Id" data-title="@item.Title"></div>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.Publisher)</td>
+                <td>@Html.DisplayFor(modelItem => item.PublishYear)</td>
+                @if (User?.Identity.Name == "omacherenox@gmail.com")
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <button class="btn btn-outline-warning" onclick="AddToCart('@item.Id', '@item.Title')">Add to Cart</button>
+                    </td>
+                }
+                else
+                {
+                    <td><a asp-action="Details" asp-route-id="@item.Id">Details</a></td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <h2>Cart</h2>
+    <table class="table" style="width: 40%;">
+        <thead class="table table-info">
+            <tr>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="cart-body">
+            <!-- Cart items will be added here -->
+        </tbody>
+    </table>
+    <button class="btn btn-danger" onclick="ClearCart()">Clear Cart</button>
+}
+
+else
+{
+    <h5>Sign in or Create Account to View the Available Books</h5>
+}
+
+@section Scripts {
+    <script>
+        // Initialize cart
+        let cart = {};
+
+        function AddToCart(id, title) {
+            if (cart[id]) {
+                cart[id].quantity += 1;
+            } else {
+                cart[id] = { title: title, quantity: 1 };
+            }
+            UpdateCartDisplay();
+        }
+
+        function RemoveFromCart(id) {
+            if (cart[id]) {
+                if (cart[id].quantity > 1) {
+                    cart[id].quantity -= 1;
+                } else {
+                    delete cart[id]; // Remove item from cart
+                }
+                UpdateCartDisplay();
+            }
+        }
+
+        function UpdateCartDisplay() {
+            const cartBody = document.getElementById('cart-body');
+            cartBody.innerHTML = ''; // Clear existing cart display
+
+            for (const id in cart) {
+                if (cart.hasOwnProperty(id)) {
+                    const item = cart[id];
+                    const truncatedTitle = item.title.length > 25 ? item.title.substring(0, 35) + '...' : item.title;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${truncatedTitle}</td>
+                        <td>${item.quantity}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="RemoveFromCart('${id}')">Remove</button>
+                        </td>
+                    `;
+                    cartBody.appendChild(row);
+                }
+            }
+        }
+
+        function ClearCart() {
+            cart = {}; // Clear the cart object
+            UpdateCartDisplay(); // Update cart display
+        }
+    </script>
+}
+
+
