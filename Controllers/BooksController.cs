@@ -33,12 +33,20 @@ namespace LMS.Controllers
             }
             var books = from m in _context.Book
                         select m;
+
             if (!String.IsNullOrEmpty(searchString))
             {
-                books = books.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
+               books = books.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
+           }
+            if (!books.Any() && !String.IsNullOrEmpty(searchString))
+            {
+                books = from m in _context.Book
+                        select m;
+                books = books.Where(s => s.Publisher!.ToUpper().Contains(searchString.ToUpper()));
             }
             return View(await books.ToListAsync());
         }
+
 
         // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -190,70 +198,68 @@ namespace LMS.Controllers
         }
 
 
-[HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Borrow(string cartData)
-{
-    var user = await _userManager.GetUserAsync(User);
-    if (string.IsNullOrEmpty(cartData))
-    {
-        // Handle case where no cart data is provided
-        return RedirectToAction(nameof(Index));
-    }
-
-    var cart = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, CartItem>>(cartData);
-
-    if (ModelState.IsValid)
-    {
-        
-        var userBookCount = _context.Borrow.Count(e=>e.BorrowerName== user.Email);
-
-        if (userBookCount >= 6)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Borrow(string cartData)
         {
-            string errorMessage = "You Have reached you maximum borrow limit";
-            return NotFound(new {Message= errorMessage});
-        }
-
-        var booksAdded = 0;
-        foreach (var item in cart)
-        {
-            booksAdded ++;
-            var borrow = new Borrow
+            var user = await _userManager.GetUserAsync(User);
+            if (string.IsNullOrEmpty(cartData))
             {
-                Title = item.Value.Title,
-                Quantity = item.Value.Quantity,
-                BorrowerName = user?.Email,
-                BorrowDate = DateTime.Now
-            };
+                // Handle case where no cart data is provided
+                return RedirectToAction(nameof(Index));
+            }
 
-            _context.Add(borrow);
+            var cart = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, CartItem>>(cartData);
+
+            if (ModelState.IsValid)
+            {
+                
+                var userBookCount = _context.Borrow.Count(e=>e.BorrowerName== user.Email);
+
+                if (userBookCount >= 6)
+                {
+                    string errorMessage = "You Have reached you maximum borrow limit";
+                    return NotFound(new {Message= errorMessage});
+                }
+
+                var booksAdded = 0;
+                foreach (var item in cart)
+                {
+                    booksAdded ++;
+                    var borrow = new Borrow
+                    {
+                        Title = item.Value.Title,
+                        Quantity = item.Value.Quantity,
+                        BorrowerName = user?.Email,
+                        BorrowDate = DateTime.Now
+                    };
+
+                    _context.Add(borrow);
+                }
+                if (booksAdded+userBookCount > 6)
+                {
+                    return NotFound(new {Message= $"You have reached your book borrowing limit. You can only borrow upto {6-userBookCount} Book(s)"});
+
+                }
+                else 
+                {
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Borrow));
+                }
+
+            }
+
+                // If validation fails, return the full list to the view
+                var borrowList = await _context.Borrow.ToListAsync();
+                return View(borrowList);
         }
-        if (booksAdded+userBookCount > 6)
+
+
+        public class CartItem
         {
-            return NotFound(new {Message= $"You have reached your book borrowing limit. You can only borrow upto {6-userBookCount} Book(s)"});
-
+            public string Title { get; set; }
+            public int Quantity { get; set; }
         }
-        else 
-        {
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Borrow));
-        }
-
-
-
-    }
-
-    // If validation fails, return the full list to the view
-    var borrowList = await _context.Borrow.ToListAsync();
-    return View(borrowList);
-}
-
-
-public class CartItem
-{
-    public string Title { get; set; }
-    public int Quantity { get; set; }
-}
 
 
     }
