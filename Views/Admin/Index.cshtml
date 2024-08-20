@@ -15,7 +15,8 @@
             <th>@Html.DisplayNameFor(model => model.FirstOrDefault().BorrowDate)</th>
             <th>@Html.DisplayNameFor(model => model.FirstOrDefault().IsAproved)</th>
             <th>@Html.DisplayNameFor(model => model.FirstOrDefault().IsReturned)</th>
-            <th>Actions</th>
+            <th>Aprove</th>
+            <th>Reject</th>
         </tr>
     </thead>
     <tbody>
@@ -32,14 +33,30 @@
                     <form method="post" action="/Admin/Approve">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="@item.Id" />
-                        <button type="submit" class="btn btn-sm btn-outline-success">Approve</button>
+                        @if (item.IsAproved == true)
+                        {
+                            <button type="submit" class="btn btn-sm btn-outline-secondary" disabled>Approve</button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-sm btn-outline-success">Approve</button>
+                        }
+
                     </form>
                 </td>
                 <td>
                     <form method="post" action="/Admin/Reject">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="@item.Id" />
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
+                        @if (item.IsAproved == true)
+                        {
+                            <button type="submit" class="btn btn-sm btn-outline-secondary" disabled>Reject</button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
+                        }
+
                     </form>
                 </td>
             </tr>

@@ -12,20 +12,19 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <h1>All Available Books</h1>
-    @if (User?.Identity.Name == "omacherenox@gmail.com")
-    {
-        <p>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        @if (User?.Identity.Name == "omacherenox@gmail.com")
+        {
             <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
-        </p>
-    }
-    <form asp-controller="Books" asp-action="Index">
+        }
 
-        <p class="input-group">
-            <input type="text" name="searchString" class="border-1 border-secondary"/>
-        <input type="submit" value="Search" class="btn btn-outline-secondary btn-sm"/>
-        </p>
+        <form asp-controller="Books" asp-action="Index" class="d-flex">
+            <input type="text" name="searchString" class="form-control border-1 border-secondary me-2"
+                placeholder="Search" />
+            <input type="submit" value="Search" class="btn btn-outline-secondary btn-sm" />
+        </form>
+    </div>
 
-    </form>
 
     <table class="table">
         <thead class="table-active">
@@ -37,59 +36,59 @@
             </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <div id="book-@item.Id" data-title="@item.Title"></div>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>@Html.DisplayFor(modelItem => item.Publisher)</td>
-                <td>@Html.DisplayFor(modelItem => item.PublishYear)</td>
-                @if (User?.Identity.Name == "omacherenox@gmail.com")
-                {
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                        <button class="btn btn-outline-warning btn-sm" onclick="AddToCart('@item.Id', '@item.Title')">Add to Cart</button>
-                    </td>
-                }
-                else
-                {
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>  
-                        <button class="btn btn-outline-warning btn-sm" onclick="AddToCart('@item.Id', '@item.Title')">Add to Cart</button>
+            @foreach (var item in Model)
+            {
+                <div id="book-@item.Id" data-title="@item.Title"></div>
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Publisher)</td>
+                    <td>@Html.DisplayFor(modelItem => item.PublishYear)</td>
+                    @if (User?.Identity.Name == "omacherenox@gmail.com")
+                    {
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            <button class="btn btn-outline-warning btn-sm" onclick="AddToCart('@item.Id', '@item.Title')">Add to
+                                Cart</button>
                         </td>
-                    
-                }
-            </tr>
-        }
+                    }
+                    else
+                    {
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            <button class="btn btn-outline-warning btn-sm" onclick="AddToCart('@item.Id', '@item.Title')">Add to
+                                Cart</button>
+                        </td>
+
+                    }
+                </tr>
+            }
         </tbody>
     </table>
-    
-<form asp-action="Borrow" method="post">
-    <input type="hidden" id="cart-data" name="cartData" />
-    <div id="cart-container" style="display: none;" class="container mt-4">
-        <h5>Cart</h5>
-        <table class="table table-sm table-stripped" style="width: 40%;">
-            <thead class="table table-info sticky-top">
-                <tr>
-                    <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Remove</th>
-                </tr>
-            </thead>
-            <tbody id="cart-body">
-                <!-- Cart items will be added here -->
-            </tbody>
-        </table> 
-        <p style="width: 40%;">
-            <button class="btn btn-danger btn-sm" onclick="ClearCart()">Clear Cart</button>
-            <button class="btn btn-success btn-sm float-end" type="submit" onclick="submitCartData()">Submit</button>
-        </p>
-    </div>
-</form>
+
+    <form asp-action="Borrow" method="post">
+        <input type="hidden" id="cart-data" name="cartData" />
+        <div id="cart-container" style="display: none;" class="container mt-4">
+            <h5>Cart</h5>
+            <table class="table table-sm table-stripped" style="width: 40%;">
+                <thead class="table table-info sticky-top">
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-body">
+                    <!-- Cart items will be added here -->
+                </tbody>
+            </table>
+            <p style="width: 40%;">
+                <button class="btn btn-danger btn-sm" onclick="ClearCart()">Clear Cart</button>
+                <button class="btn btn-success btn-sm float-end" type="submit" onclick="submitCartData()">Submit</button>
+            </p>
+        </div>
+    </form>
 
 
 
@@ -99,5 +98,3 @@ else
 {
     <h5>Sign in or Create Account to View the Available Books</h5>
 }
-
- 

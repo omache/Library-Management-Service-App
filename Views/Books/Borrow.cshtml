@@ -1,4 +1,3 @@
-
 @using Microsoft.EntityFrameworkCore.Metadata.Internal;
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<IdentityUser> UserManager
@@ -11,9 +10,12 @@
     ViewData["Borrow"] = "Borrow";
 }
 
+<h3>List of Your Borrowed Books</h3>
+<hr>
+
 @if (SignInManager.IsSignedIn(User))
 {
-    <table class="table">
+    <table class="table table-hover table-sm">
         <thead class="table-active">
             <tr>
                 <th>@Html.DisplayNameFor(model => model.Title)</th>
@@ -35,7 +37,7 @@
         </tbody>
     </table>
 }
-else 
+else
 {
     <h2 class="text-danger">403 Access Denied</h2>
     <h4 class="text-danger">You do not have permission to access this page</h4>

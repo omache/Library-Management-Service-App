@@ -27,39 +27,47 @@ namespace LMS.Controllers
         }
 
         [HttpPost]
-[ValidateAntiForgeryToken]
-public IActionResult Approve(int id)
-{
-    var borrow = _context.Borrow.Find(id);
-    if (borrow == null)
-    {
-        return NotFound();
-    }
+        [ValidateAntiForgeryToken]
+        public IActionResult Approve(int id)
+        {
+            var borrow = _context.Borrow.Find(id);
+            if (borrow == null)
+            {
+                return NotFound();
+            }
 
-    borrow.IsAproved = true;
-    _context.SaveChanges();
+            borrow.IsAproved = true;
+            _context.SaveChanges();
 
-    return RedirectToAction("Index"); // Redirect back to the index page
-}
-
-[HttpPost]
-[ValidateAntiForgeryToken]
-public IActionResult Reject(int id)
-{
-    var borrow = _context.Borrow.Find(id);
-    if (borrow == null)
-    {
-        return NotFound();
-    }
-
-    // Assuming you have a property or method to handle rejection
-    // For example, you might set a property like IsRejected = true
-    _context.Borrow.Remove(borrow); // Or any other rejection logic
-    _context.SaveChanges();
-
-    return RedirectToAction("Index"); // Redirect back to the index page
-}
-
+            return RedirectToAction("Index"); // Redirect back to the index page
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Reject(int id)
+        {
+            var borrow = _context.Borrow.Find(id);
+            if (borrow == null)
+            {
+                return NotFound();
+            }
+
+            // Assuming you have a property or method to handle rejection
+            // For example, you might set a property like IsRejected = true
+            _context.Borrow.Remove(borrow); // Or any other rejection logic
+            _context.SaveChanges();
+
+            return RedirectToAction("Index"); // Redirect back to the index page
+        }
+
+        //Admin/BorrowersList GET:
+
+        public async Task<IActionResult> BorrowersList()
+        {
+            var approvedBorrowers = await _context.Borrow.Where(u=> u.IsAproved==true).ToListAsync();
+            return View(approvedBorrowers);
+        }
+
     }
+}
 

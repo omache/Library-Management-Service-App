@@ -1,0 +1,28 @@
+@model IEnumerable<LMS.Models.Borrow>
+
+
+@{
+    ViewData["Title"] = "BorrowersList";
+}
+
+<h3>Borrower List</h3>
+<table class="table">
+    <thead class="active">
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Book Borrowed</th>
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.BorrowerName</td>
+                <td>@user.Title</td>
+            </tr>
+        }
+    </tbody>
+</table>
