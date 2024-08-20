@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using Microsoft.EntityFrameworkCore.Metadata.Internal;
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
 
 @inject UserManager<IdentityUser> UserManager
 @inject SignInManager<IdentityUser> SignInManager
@@ -19,6 +19,7 @@
         </p>
     }
     <form asp-controller="Books" asp-action="Index">
+
         <p class="input-group">
             <input type="text" name="searchString" class="border-1 border-secondary"/>
         <input type="submit" value="Search" class="btn btn-outline-secondary btn-sm"/>
@@ -56,34 +57,40 @@
                 }
                 else
                 {
-                    <td><a asp-action="Details" asp-route-id="@item.Id">Details</a></td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>  
+                        <button class="btn btn-outline-warning btn-sm" onclick="AddToCart('@item.Id', '@item.Title')">Add to Cart</button>
+                        </td>
+                    
                 }
             </tr>
         }
         </tbody>
     </table>
     
-    <form asp-action="Borrow">
+<form asp-action="Borrow" method="post">
+    <input type="hidden" id="cart-data" name="cartData" />
     <div id="cart-container" style="display: none;" class="container mt-4">
-    <h5>Cart</h5>
-    <table class="table table-sm table-stripped" style="width: 40%;">
-        <thead class="table table-info sticky-top">
-            <tr>
-                <th>Item Name</th>
-                <th>Quantity</th>
-                <th>Remove</th>
-            </tr>
-        </thead>
-        <tbody id="cart-body">
-            <!-- Cart items will be added here -->
-        </tbody>
-    </table> 
-    <p style="width: 40%;">
-        <button class="btn btn-danger btn-sm" onclick="ClearCart()">Clear Cart</button>
-        <button class="btn btn-success btn-sm float-end" type="submit">Submit</button>
-    </p>
-   </div>
-    </form>
+        <h5>Cart</h5>
+        <table class="table table-sm table-stripped" style="width: 40%;">
+            <thead class="table table-info sticky-top">
+                <tr>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody id="cart-body">
+                <!-- Cart items will be added here -->
+            </tbody>
+        </table> 
+        <p style="width: 40%;">
+            <button class="btn btn-danger btn-sm" onclick="ClearCart()">Clear Cart</button>
+            <button class="btn btn-success btn-sm float-end" type="submit" onclick="submitCartData()">Submit</button>
+        </p>
+    </div>
+</form>
+
 
 
 }

@@ -182,24 +182,59 @@ namespace LMS.Controllers
             return _context.Book.Any(e => e.Id == id);
         }
 
-        //GET: Books/Borrow
-        public IActionResult Borrow()
+        // GET: Books/Borrow
+        public async Task<IActionResult> Borrow()
         {
-            return View();
+            var borrows = await _context.Borrow.ToListAsync();
+            return View(borrows);
         }
 
-        //POST: Books/Borrow
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Borrow([Bind("Title, Quantity")] Borrow borrow)
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Borrow(string cartData)
+{
+    var user = await _userManager.GetUserAsync(User);
+    if (string.IsNullOrEmpty(cartData))
+    {
+        // Handle case where no cart data is provided
+        return RedirectToAction(nameof(Index));
+    }
+
+    var cart = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, CartItem>>(cartData);
+
+    if (ModelState.IsValid)
+    {
+        foreach (var item in cart)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (ModelState.IsValid)
+            var borrow = new Borrow
             {
-                borrow.BorrowerName = user?.Email;
-                borrow.BorrowDate = DateTime.Now;
-            }
-            return View(await borrow.ToListAsync());
+                Title = item.Value.Title,
+                Quantity = item.Value.Quantity,
+                BorrowerName = user?.Email,
+                BorrowDate = DateTime.Now
+            };
+
+            _context.Add(borrow);
         }
+
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Borrow));
+    }
+
+    // If validation fails, return the full list to the view
+    var borrowList = await _context.Borrow.ToListAsync();
+    return View(borrowList);
+}
+
+
+public class CartItem
+{
+    public string Title { get; set; }
+    public int Quantity { get; set; }
+}
+
+
     }
 }
+

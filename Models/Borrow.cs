@@ -4,18 +4,18 @@ namespace LMS.Models
 {
     public class Borrow
     {
-        public int Id { get; set; }
-        public string BorrowerName { get; set; }
-        public string Title { get; set; }
-        public int Quantity { get; set; }
+        public int? Id { get; set; }
+        [Display(Name ="Name of Borrower")]
+        public string? BorrowerName { get; set; }
+        public string? Title { get; set; }
+        public int? Quantity { get; set; }
         [DataType(DataType.DateTime)]
+        [Display(Name ="Date of Borrowing")]
         public DateTime BorrowDate { get; set; }
-        public bool IsAproved { get; set; } = false;
-        public bool IsReturned {  get; set; } = false;
+        [Display(Name ="Approved?")]
+        public bool? IsAproved { get; set; } = false;
+        [Display(Name = "Returned?")]
+        public bool? IsReturned {  get; set; } = false;
 
-        internal async Task<string?> ToListAsync()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

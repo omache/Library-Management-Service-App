@@ -55,6 +55,11 @@
        UpdateCartDisplay(); // Update cart display
    }
 
+   function submitCartData() {
+    document.getElementById('cart-data').value = JSON.stringify(cart);
+}
+
+
 
 
 

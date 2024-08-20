@@ -1,29 +1,48 @@
-﻿@{
+﻿@model IEnumerable<LMS.Models.Borrow>
+
+@{
     ViewData["Title"] = "Index";
 }
 
-<h2>This is the Admin Panel</h2>
+<h2>Admin Panel</h2>
 
-<div>
-    <form class="form-group">
-        <h6 class="form-title">Here are some of the capabilities of the Admin</h6>
-        <ul class="list-group">
-            <li class="list-group-item">Add, Edit, Delete Books</li>
-            <li class="list-group-item">Add, Edit, Delete Authors</li>
-            <li class="list-group-item">Add, Edit, Delete Publishers</li>
-            <li class="list-group-item">Add, Edit, Delete Genres</li>
-            <li class="list-group-item">Add, Edit, Delete Users & Librarians</li>
-            <li class="list-group-item">Set limit to the number of books a member can borrow</li>
-            <li class="list-group-item">Set limit to the number of times a book can be issued to a person </li>
-           
-        </ul>
-       
-    </form>
-</div>
-
-<br>
-<br>
-<hr>
-
-
-<a asp-area="" asp-controller="Admin" asp-action="AddBook"><button class="btn btn-primary">Add New Book</button></a>
+<table class="table">
+    <thead class="active">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().BorrowerName)</th>
+            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Title)</th>
+            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Quantity)</th>
+            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().BorrowDate)</th>
+            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().IsAproved)</th>
+            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().IsReturned)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.BorrowerName</td>
+                <td>@item.Title</td>
+                <td>@item.Quantity</td>
+                <td>@item.BorrowDate.ToShortDateString()</td>
+                <td>@item.IsAproved</td>
+                <td>@item.IsReturned</td>
+                <td>
+                    <form method="post" action="/Admin/Approve">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-sm btn-outline-success">Approve</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" action="/Admin/Reject">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
