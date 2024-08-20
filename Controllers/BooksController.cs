@@ -205,8 +205,19 @@ public async Task<IActionResult> Borrow(string cartData)
 
     if (ModelState.IsValid)
     {
+        
+        var userBookCount = _context.Borrow.Count(e=>e.BorrowerName== user.Email);
+
+        if (userBookCount >= 6)
+        {
+            string errorMessage = "You Have reached you maximum borrow limit";
+            return NotFound(new {Message= errorMessage});
+        }
+
+        var booksAdded = 0;
         foreach (var item in cart)
         {
+            booksAdded ++;
             var borrow = new Borrow
             {
                 Title = item.Value.Title,
@@ -217,9 +228,19 @@ public async Task<IActionResult> Borrow(string cartData)
 
             _context.Add(borrow);
         }
+        if (booksAdded+userBookCount > 6)
+        {
+            return NotFound(new {Message= $"You have reached your book borrowing limit. You can only borrow upto {6-userBookCount} Book(s)"});
 
+        }
+        else 
+        {
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Borrow));
+        }
+
+
+
     }
 
     // If validation fails, return the full list to the view
