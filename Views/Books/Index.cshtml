@@ -18,6 +18,13 @@
             <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
         </p>
     }
+    <form asp-controller="Books" asp-action="Index">
+        <p class="input-group">
+            <input type="text" name="searchString" class="border-1 border-secondary"/>
+        <input type="submit" value="Search" class="btn btn-outline-secondary btn-sm"/>
+        </p>
+
+    </form>
 
     <table class="table">
         <thead class="table-active">
@@ -44,7 +51,7 @@
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                         <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                        <button class="btn btn-outline-warning" onclick="AddToCart('@item.Id', '@item.Title')">Add to Cart</button>
+                        <button class="btn btn-outline-warning btn-sm" onclick="AddToCart('@item.Id', '@item.Title')">Add to Cart</button>
                     </td>
                 }
                 else
@@ -55,21 +62,30 @@
         }
         </tbody>
     </table>
-
-    <h2>Cart</h2>
-    <table class="table" style="width: 40%;">
-        <thead class="table table-info">
+    
+    <form asp-action="Borrow">
+    <div id="cart-container" style="display: none;" class="container mt-4">
+    <h5>Cart</h5>
+    <table class="table table-sm table-stripped" style="width: 40%;">
+        <thead class="table table-info sticky-top">
             <tr>
                 <th>Item Name</th>
                 <th>Quantity</th>
-                <th>Actions</th>
+                <th>Remove</th>
             </tr>
         </thead>
         <tbody id="cart-body">
             <!-- Cart items will be added here -->
         </tbody>
-    </table>
-    <button class="btn btn-danger" onclick="ClearCart()">Clear Cart</button>
+    </table> 
+    <p style="width: 40%;">
+        <button class="btn btn-danger btn-sm" onclick="ClearCart()">Clear Cart</button>
+        <button class="btn btn-success btn-sm float-end" type="submit">Submit</button>
+    </p>
+   </div>
+    </form>
+
+
 }
 
 else
@@ -77,57 +93,4 @@ else
     <h5>Sign in or Create Account to View the Available Books</h5>
 }
 
-@section Scripts {
-    <script>
-        // Initialize cart
-        let cart = {};
-
-        function AddToCart(id, title) {
-            if (cart[id]) {
-                cart[id].quantity += 1;
-            } else {
-                cart[id] = { title: title, quantity: 1 };
-            }
-            UpdateCartDisplay();
-        }
-
-        function RemoveFromCart(id) {
-            if (cart[id]) {
-                if (cart[id].quantity > 1) {
-                    cart[id].quantity -= 1;
-                } else {
-                    delete cart[id]; // Remove item from cart
-                }
-                UpdateCartDisplay();
-            }
-        }
-
-        function UpdateCartDisplay() {
-            const cartBody = document.getElementById('cart-body');
-            cartBody.innerHTML = ''; // Clear existing cart display
-
-            for (const id in cart) {
-                if (cart.hasOwnProperty(id)) {
-                    const item = cart[id];
-                    const truncatedTitle = item.title.length > 25 ? item.title.substring(0, 35) + '...' : item.title;
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${truncatedTitle}</td>
-                        <td>${item.quantity}</td>
-                        <td>
-                            <button class="btn btn-danger btn-sm" onclick="RemoveFromCart('${id}')">Remove</button>
-                        </td>
-                    `;
-                    cartBody.appendChild(row);
-                }
-            }
-        }
-
-        function ClearCart() {
-            cart = {}; // Clear the cart object
-            UpdateCartDisplay(); // Update cart display
-        }
-    </script>
-}
-
-
+ 

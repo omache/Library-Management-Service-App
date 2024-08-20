@@ -1,0 +1,51 @@
+@model LMS.Models.Borrow
+@using Microsoft.EntityFrameworkCore.Metadata.Internal;
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+
+
+@{
+    ViewData["Borrow"] = "Borrow";
+}
+
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+<table class="table">
+    <thead class="table-active">
+        <tr>
+            <th>@Html.DisplayNameFor(model=>model.Title)</th>
+            <th>@Html.DisplayNameFor(model=>model.Quantity)</th>
+            <th>@Html.DisplayNameFor(model=>model.BorrowDate)</th>
+            <th>@Html.DisplayNameFor(model=>model.IsAproved)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modeItem=>item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem=> item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem=>item.BorrowDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem=> item.IsAproved)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+
+else 
+{
+    <h2 class="text-danger">403 Access Denied</h2>
+    <h4 class="text-danger">You do not have permission to access this page</h4>
+}

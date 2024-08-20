@@ -10,7 +10,7 @@ namespace LMS.Data
             : base(options)
         {
         }
-        public DbSet<LMS.Models.Borrowed> Borrowed { get; set; } = default!;
+        public DbSet<LMS.Models.Borrow> Borrow { get; set; } = default!;
         public DbSet<LMS.Models.Book> Book { get; set; } = default!;
     }
 }

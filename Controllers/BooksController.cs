@@ -25,9 +25,19 @@ namespace LMS.Controllers
         public string Admin = "omacherenox@gmail.com";
 
         // GET: Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Book.ToListAsync());
+            if (_context.Book == null)
+            {
+                return NotFound();
+            }
+            var books = from m in _context.Book
+                        select m;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
+            }
+            return View(await books.ToListAsync());
         }
 
         // GET: Books/Details/5
@@ -65,7 +75,6 @@ namespace LMS.Controllers
         }
 
         // POST: Books/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Publisher,PublishYear")] Book book)
@@ -102,8 +111,7 @@ namespace LMS.Controllers
         }
 
         // POST: Books/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Publisher,PublishYear")] Book book)
@@ -172,6 +180,26 @@ namespace LMS.Controllers
         private bool BookExists(int id)
         {
             return _context.Book.Any(e => e.Id == id);
+        }
+
+        //GET: Books/Borrow
+        public IActionResult Borrow()
+        {
+            return View();
+        }
+
+        //POST: Books/Borrow
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Borrow([Bind("Title, Quantity")] Borrow borrow)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (ModelState.IsValid)
+            {
+                borrow.BorrowerName = user?.Email;
+                borrow.BorrowDate = DateTime.Now;
+            }
+            return View(await borrow.ToListAsync());
         }
     }
 }
