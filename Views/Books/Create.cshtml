@@ -24,6 +24,11 @@
                 <span asp-validation-for="Publisher" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="PublishYear" class="control-label"></label>
                 <input asp-for="PublishYear" class="form-control" />
                 <span asp-validation-for="PublishYear" class="text-danger"></span>
@@ -38,4 +43,3 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-

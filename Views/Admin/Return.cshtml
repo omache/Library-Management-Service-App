@@ -1,0 +1,27 @@
+@model IEnumerable<LMS.Models.Borrow>;
+@{
+    ViewData["Title"] = "Returned";
+}
+
+<h3>Approve if Returned</h3>
+
+<table class="table">
+    <thead class="active">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().BorrowerName)</th>
+            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Title)</th>
+            <th>Returned</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Where(m => m.IsAproved == true))
+        {
+            <tr>
+                <td>@item.BorrowerName</td>
+                <td>@item.Title</td>
+                <td><button class="btn btn-success">Return</button></td>
+            </tr>
+
+        }
+    </tbody>
+</table>

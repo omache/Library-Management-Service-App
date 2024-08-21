@@ -32,6 +32,7 @@
                 <th>@Html.DisplayNameFor(model => model.Title)</th>
                 <th>@Html.DisplayNameFor(model => model.Publisher)</th>
                 <th>@Html.DisplayNameFor(model => model.PublishYear)</th>
+                <th>@Html.DisplayNameFor(model => model.Quantity)</th>
                 <th></th>
             </tr>
         </thead>
@@ -43,14 +44,26 @@
                     <td>@Html.DisplayFor(modelItem => item.Title)</td>
                     <td>@Html.DisplayFor(modelItem => item.Publisher)</td>
                     <td>@Html.DisplayFor(modelItem => item.PublishYear)</td>
+                    <td id="quantity-@item.Id">@Html.DisplayFor(modelItem => item.Quantity)</td>
                     @if (User?.Identity.Name == "omacherenox@gmail.com")
                     {
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                             <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                             <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                            <button class="btn btn-outline-warning btn-sm" onclick="AddToCart('@item.Id', '@item.Title')">Add to
-                                Cart</button>
+                            @if (item.Quantity > 0)
+                            {
+                                <button class="btn btn-outline-warning btn-sm"
+                                    onclick="AddToCart('@item.Id', '@item.Title','@item.Quantity')">Add to
+                                    Cart
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-outline-secondary btn-sm" disabled
+                                    onclick="AddToCart('@item.Id', '@item.Title')">Out of Stock</button>
+                            }
+
                         </td>
                     }
                     else

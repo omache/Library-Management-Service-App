@@ -1,5 +1,7 @@
 @using Microsoft.EntityFrameworkCore.Metadata.Internal;
+@using System;
 @using Microsoft.AspNetCore.Identity
+@using System.IO
 @inject UserManager<IdentityUser> UserManager
 @inject SignInManager<IdentityUser> SignInManager
 
@@ -8,6 +10,7 @@
 
 @{
     ViewData["Borrow"] = "Borrow";
+
 }
 
 <h3>List of Your Borrowed Books</h3>
@@ -22,6 +25,10 @@
                 <th>@Html.DisplayNameFor(model => model.Quantity)</th>
                 <th>@Html.DisplayNameFor(model => model.BorrowDate)</th>
                 <th>@Html.DisplayNameFor(model => model.IsAproved)</th>
+                <th>Status</th>
+                <th>OverDue Penalty</th>
+
+
             </tr>
         </thead>
         <tbody>
@@ -32,6 +39,22 @@
                     <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
                     <td>@Html.DisplayFor(modelItem => item.BorrowDate)</td>
                     <td>@Html.DisplayFor(modelItem => item.IsAproved)</td>
+                    @if (item.BorrowPeriod > 10 && item.IsAproved == true)
+                    {
+                        <td class="bg-danger">Overdue: @item.OverDuePeriod Days</td>
+                        <td class="bg-danger">@item.OverDueCharges</td>
+                    }
+                    else if (item.BorrowPeriod <= 10 && item.IsAproved == true)
+                    {
+                        <td class="bg-success">@Math.Abs(item.OverDuePeriod) Days Remaining</td>
+                        <td class="bg-success">Ksh00.00</td>
+                    }
+                    else
+                    {
+                        <td class="bg-warning">Not Aprroved</td>
+                        <td class="bg-warning">Ksh00.00</td>
+                    }
+
                 </tr>
             }
         </tbody>

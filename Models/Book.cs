@@ -11,5 +11,7 @@ namespace LMS.Models
         [Display(Name ="Year of Publishing")]
         [DisplayFormat(DataFormatString ="{0:yyyy}")]
         public DateTime PublishYear { get; set; }
+        public int? Quantity { get; set; } 
+        
     }
 }

@@ -85,7 +85,7 @@ namespace LMS.Controllers
         // POST: Books/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Publisher,PublishYear")] Book book)
+        public async Task<IActionResult> Create([Bind("Id,Title,Publisher,PublishYear,Quantity")] Book book)
         {
             var user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid && user?.Email == Admin )
@@ -122,7 +122,7 @@ namespace LMS.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Publisher,PublishYear")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Publisher,PublishYear,Quantity")] Book book)
         {
             if (id != book.Id)
             {
@@ -216,7 +216,7 @@ namespace LMS.Controllers
                 
                 var userBookCount = _context.Borrow.Count(e=>e.BorrowerName== user.Email);
 
-                if (userBookCount >= 6)
+                if (userBookCount > 30)
                 {
                     string errorMessage = "You Have reached you maximum borrow limit";
                     return NotFound(new {Message= errorMessage});
@@ -236,9 +236,9 @@ namespace LMS.Controllers
 
                     _context.Add(borrow);
                 }
-                if (booksAdded+userBookCount > 6)
+                if (booksAdded+userBookCount > 30)
                 {
-                    return NotFound(new {Message= $"You have reached your book borrowing limit. You can only borrow upto {6-userBookCount} Book(s)"});
+                    return NotFound(new {Message= $"You have reached your book borrowing limit. You can only borrow upto {30-userBookCount} Book(s)"});
 
                 }
                 else 
