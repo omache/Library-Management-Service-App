@@ -1,4 +1,4 @@
-@model IEnumerable<LMS.Models.Borrow>;
+@model IEnumerable<LMS.Models.Borrow>
 @{
     ViewData["Title"] = "Returned";
 }
@@ -16,12 +16,34 @@
     <tbody>
         @foreach (var item in Model.Where(m => m.IsAproved == true))
         {
-            <tr>
+            <tr id="row-@item.Id">
                 <td>@item.BorrowerName</td>
                 <td>@item.Title</td>
-                <td><button class="btn btn-success">Return</button></td>
+                <td>
+                    <button class="btn btn-success" onclick="markReturned(@item.Id)">Return</button>
+                </td>
             </tr>
-
         }
     </tbody>
 </table>
+
+<script>
+    function markReturned(id) {
+        $.ajax({
+            url: '@Url.Action("Return", "Admin")',
+            type: 'POST',
+            data: { id: id },
+            success: function (result) {
+                // Remove the row from the table if successful
+                if (result.success) {
+                    $("#row-" + id).remove();
+                } else {
+                    alert('Failed to mark as returned.');
+                }
+            },
+            error: function () {
+                alert('An error occurred.');
+            }
+        });
+    }
+</script>

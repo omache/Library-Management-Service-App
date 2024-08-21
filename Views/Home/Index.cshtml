@@ -1,8 +1,90 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to Utumishi Library</h1>
-    <p>Create and Account or Sign In to borrow or return a book</p>
+<div class="container">
+    <!-- Welcome Section -->
+    <div class="jumbotron text-center my-5">
+        <h1 class="display-4">Welcome to Utumishi Library</h1>
+
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <a href="/Books" class="btn btn-primary btn-lg">Explore Books</a>
+        }
+        else
+        {
+            <p class="lead">Create an Account or Sign In to borrow or return a book</p>
+            <a href="/Identity/Account/Register" class="btn btn-primary btn-lg">Register</a>
+            <a href="/Identity/Account/Login" class="btn btn-secondary btn-lg">Sign In</a>
+        }
+
+
+    </div>
+
+    <!-- Featured Books Section -->
+    <div class="row my-5">
+        <div class="col-12">
+            <h2 class="text-center">Featured Books</h2>
+            <hr>
+        </div>
+
+        <!-- Example of a featured book card -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="\images\hobbit.jpeg" class="card-img-top" alt="Book Title">
+                <div class="card-body">
+                    <h5 class="card-title">The Hobbit</h5>
+                    <p class="card-text caption">A hobbit named Bilbo embarks on an unexpected journey with dwarves to
+                        reclaim their homeland from a dragon.</p>
+                    <a href="/Books/Details/1" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="\images\warpeace.jpeg" class="card-img-top" alt="Book Title">
+                <div class="card-body">
+                    <h5 class="card-title">War and Peace</h5>
+                    <p class="card-text">In 'War and Peace,' Leo Tolstoy explores the impact of the Napoleonic Wars on
+                        Russian aristocratic families, interweaving personal dramas with historical events, highlighting
+                        themes of love, fate, and resilience in a tumultuous era.</p>
+                    <a href="/Books/Details/3" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="\images\purple.png" class="card-img-top" alt="Book Title">
+                <div class="card-body">
+                    <h5 class="card-title">Purple Hearts</h5>
+                    <p class="card-text">Purple Hearts’ follows a sergeant and a soldier who are thrown together in the
+                        midst of war. Despite their contrasting backgrounds and the challenges they face, their
+                        relationship evolves, leading to a story of personal growth and connection..</p>
+                    <a href="/Books/Details/3" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Repeat similar card blocks for more featured books -->
+    </div>
+
+    <!-- Announcements Section -->
+    <div class="row my-5">
+        <div class="col-12">
+            <h2 class="text-center">Library Announcements</h2>
+            <hr>
+        </div>
+        <div class="col-md-12">
+            <div class="alert alert-info" role="alert">
+                <strong>New Arrivals:</strong> Check out the latest books added to our collection!
+            </div>
+            <div class="alert alert-warning" role="alert">
+                <strong>Library Hours Update:</strong> The library will be closed on public holidays.
+            </div>
+        </div>
+    </div>
+</div>
 </div>

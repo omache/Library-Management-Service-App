@@ -99,6 +99,37 @@ public async Task<IActionResult> Approve(int id)
             return View(borrows);
         }
 
+    //Admin Returned/ POST:
+        [HttpPost]
+        public async Task<IActionResult> Return(int id)
+        {
+            var borrow = await _context.Borrow.FindAsync(id);
+            var returnedBook = await _context.Book.FirstOrDefaultAsync(x=> x.Title == borrow.Title);
+            if (borrow == null)
+            {
+                return Json(new { success = false, message = "Borrow entry not found." });
+            }
+
+            if (borrow.Quantity>1)
+            {
+                borrow.IsReturned = true;
+                returnedBook.Quantity += borrow.Quantity ;
+                _context.Borrow.Remove(borrow);
+            }
+            else
+            {
+             borrow.IsReturned = true;
+            _context.Borrow.Remove(borrow);
+            returnedBook.Quantity +=1;
+            }
+
+            // Assuming you want to remove the entry from the database
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true });
+        }
+
+
     }
 }
 
