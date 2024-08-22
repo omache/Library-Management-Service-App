@@ -78,7 +78,7 @@ Unit tests and integration tests are provided to ensure the application's functi
 
 ```bash
 dotnet test
-
+```
 
 2. **Database Setup**:
    - Ensure MSSQL is installed and running on your machine.
